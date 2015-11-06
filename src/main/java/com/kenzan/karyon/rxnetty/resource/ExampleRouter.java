@@ -1,16 +1,14 @@
-package com.kenzan.karyon.rxnetty;
+package com.kenzan.karyon.rxnetty.resource;
 
 import io.netty.buffer.ByteBuf;
 import io.reactivex.netty.protocol.http.server.HttpServerRequest;
 import io.reactivex.netty.protocol.http.server.HttpServerResponse;
 import io.reactivex.netty.protocol.http.server.RequestHandler;
-
-import java.util.regex.Pattern;
-
 import netflix.karyon.transport.http.SimpleUriRouter;
+import netflix.karyon.transport.http.health.HealthCheckEndpoint;
 import rx.Observable;
 
-import com.sun.jersey.api.uri.UriPattern;
+import com.kenzan.karyon.rxnetty.health.HealthCheck;
 
 
 public class ExampleRouter implements RequestHandler<ByteBuf, ByteBuf>{
@@ -19,24 +17,11 @@ public class ExampleRouter implements RequestHandler<ByteBuf, ByteBuf>{
 
     public ExampleRouter() {
         delegate = new SimpleUriRouter<>();
+        HealthCheck healthCheckHandler = new HealthCheck();
 
         delegate
-        .addUri("/hello", (request, response) -> {
-            response.writeString("Hello");
-            return response.close();
-        })
-        .addUri("/auth/hello", (request, response) -> {
-            response.writeString("Hello authorized");
-            return response.close();
-        })
-        .addUriRegex("/hello/(.*)", (request, response) -> {
-
-            UriPattern pattern = new UriPattern(Pattern.compile("/hello/(.*)"));
-            String name = pattern.match(request.getUri()).group(1);
-            response.writeString("Hello " + name);
-
-            return response.close();
-        });
+        .addUri("/hello/*", new HelloResource())
+        .addUri("/healthcheck", new HealthCheckEndpoint(healthCheckHandler));
     }
     @Override
     public Observable<Void> handle(HttpServerRequest<ByteBuf> request,

@@ -1,12 +1,11 @@
-package com.kenzan.karyon.rxnetty;
+package com.kenzan.karyon.rxnetty.resource;
 
-import netflix.karyon.transport.http.HttpInterceptorSupport;
-import netflix.karyon.transport.http.HttpRequestHandler;
-import netflix.karyon.transport.http.HttpRequestHandlerBuilder;
 import io.netty.buffer.ByteBuf;
 import io.reactivex.netty.protocol.http.server.HttpServerRequest;
 import io.reactivex.netty.protocol.http.server.HttpServerResponse;
 import io.reactivex.netty.protocol.http.server.RequestHandler;
+import netflix.karyon.transport.http.HttpInterceptorSupport;
+import netflix.karyon.transport.http.HttpRequestHandler;
 import rx.Observable;
 
 public class ExampleRouteInterceptor implements RequestHandler<ByteBuf, ByteBuf>{
@@ -16,8 +15,6 @@ public class ExampleRouteInterceptor implements RequestHandler<ByteBuf, ByteBuf>
     public ExampleRouteInterceptor() {
         ExampleRouter router = new ExampleRouter();
         HttpInterceptorSupport<ByteBuf, ByteBuf> interceptorSupport = new HttpInterceptorSupport<ByteBuf, ByteBuf>();
-
-        interceptorSupport.forUri("/auth/*").intercept(new AuthInterceptor());
 
         delegate = new HttpRequestHandler<ByteBuf, ByteBuf>(router, interceptorSupport);
     }
