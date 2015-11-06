@@ -3,7 +3,10 @@ apply plugin: 'eclipse'
 apply plugin: "com.github.hierynomus.license"
 
 sourceCompatibility = 1.8
-version = '1.0'
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.8'
+}
 
 repositories { 
     mavenCentral()
