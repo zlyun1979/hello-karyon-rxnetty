@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Kenzan
+ * Copyright 2015 Kenzan, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,17 +35,25 @@ public class HelloResource implements RequestHandler<ByteBuf, ByteBuf>{
         delegate = new SimpleUriRouter<>();
 
         delegate
-        .addUri("/hello", (request, response) -> {
-            response.writeString("Hello");
-            return response.close();
+        .addUri("/hello", new RequestHandler<ByteBuf, ByteBuf>() {
+            @Override
+            public Observable<Void> handle(HttpServerRequest<ByteBuf> request,
+                    HttpServerResponse<ByteBuf> response) {
+
+                response.writeString("Hello");
+                return response.close();
+            }
         })
-        .addUriRegex("/hello/(.*)", (request, response) -> {
+        .addUriRegex("/hello/(.*)", new RequestHandler<ByteBuf, ByteBuf>() {
+            @Override
+            public Observable<Void> handle(HttpServerRequest<ByteBuf> request,
+                    HttpServerResponse<ByteBuf> response) {
+                UriPattern pattern = new UriPattern(Pattern.compile("/hello/(.*)"));
+                String name = pattern.match(request.getUri()).group(1);
+                response.writeString("Hello " + name);
 
-            UriPattern pattern = new UriPattern(Pattern.compile("/hello/(.*)"));
-            String name = pattern.match(request.getUri()).group(1);
-            response.writeString("Hello " + name);
-
-            return response.close();
+                return response.close();
+            }
         });
     }
     @Override

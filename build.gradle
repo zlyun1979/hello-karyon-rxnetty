@@ -16,7 +16,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.12.1" 
+        classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.12.1"
     }
 }
 
@@ -47,4 +47,15 @@ license {
 task run(dependsOn: [classes], type: JavaExec) {
     main = "com.kenzan.karyon.rxnetty.KaryonRxNettyExample"
     classpath = sourceSets.main.runtimeClasspath
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Karyon RxNetty Example app',
+            'Implementation-Version': version,
+            'Main-Class': 'com.kenzan.karyon.rxnetty.KaryonRxNettyExample'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
