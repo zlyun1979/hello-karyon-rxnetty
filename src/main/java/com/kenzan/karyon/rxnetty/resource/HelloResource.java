@@ -15,23 +15,23 @@
  */
 package com.kenzan.karyon.rxnetty.resource;
 
-import java.util.regex.Pattern;
-
-import netflix.karyon.transport.http.SimpleUriRouter;
-
-import com.sun.jersey.api.uri.UriPattern;
-
-import rx.Observable;
 import io.netty.buffer.ByteBuf;
 import io.reactivex.netty.protocol.http.server.HttpServerRequest;
 import io.reactivex.netty.protocol.http.server.HttpServerResponse;
 import io.reactivex.netty.protocol.http.server.RequestHandler;
+import netflix.karyon.transport.http.SimpleUriRouter;
+import rx.Observable;
+import rx.functions.Func1;
+
+import com.kenzan.karyon.rxnetty.endpoint.HelloEndpoint;
 
 public class HelloResource implements RequestHandler<ByteBuf, ByteBuf>{
 
     private final SimpleUriRouter<ByteBuf, ByteBuf> delegate;
+    private final HelloEndpoint endpoint;
 
     public HelloResource() {
+        endpoint = new HelloEndpoint();
         delegate = new SimpleUriRouter<>();
 
         delegate
@@ -40,19 +40,29 @@ public class HelloResource implements RequestHandler<ByteBuf, ByteBuf>{
             public Observable<Void> handle(HttpServerRequest<ByteBuf> request,
                     HttpServerResponse<ByteBuf> response) {
 
-                response.writeString("Hello");
-                return response.close();
+                return endpoint.getHello()
+                .flatMap(new Func1<String, Observable<Void>>() {
+                    @Override
+                    public Observable<Void> call(String body) {
+                        response.writeString(body);
+                        return response.close();
+                    }
+                });
             }
         })
         .addUriRegex("/hello/(.*)", new RequestHandler<ByteBuf, ByteBuf>() {
             @Override
             public Observable<Void> handle(HttpServerRequest<ByteBuf> request,
                     HttpServerResponse<ByteBuf> response) {
-                UriPattern pattern = new UriPattern(Pattern.compile("/hello/(.*)"));
-                String name = pattern.match(request.getUri()).group(1);
-                response.writeString("Hello " + name);
 
-                return response.close();
+                return endpoint.getHelloName(request)
+                .flatMap(new Func1<String, Observable<Void>>() {
+                    @Override
+                    public Observable<Void> call(String body) {
+                        response.writeString(body);
+                        return response.close();
+                    }
+                });
             }
         });
     }

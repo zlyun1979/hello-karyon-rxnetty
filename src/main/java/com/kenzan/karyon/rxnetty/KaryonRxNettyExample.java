@@ -15,8 +15,6 @@
  */
 package com.kenzan.karyon.rxnetty;
 
-import com.kenzan.karyon.rxnetty.resource.ExampleRouteInterceptor;
-
 import netflix.adminresources.resources.KaryonWebAdminModule;
 import netflix.karyon.Karyon;
 import netflix.karyon.ShutdownModule;

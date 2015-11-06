@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kenzan.karyon.rxnetty.resource;
+package com.kenzan.karyon.rxnetty;
 
 import io.netty.buffer.ByteBuf;
 import io.reactivex.netty.protocol.http.server.HttpServerRequest;
@@ -24,6 +24,7 @@ import netflix.karyon.transport.http.health.HealthCheckEndpoint;
 import rx.Observable;
 
 import com.kenzan.karyon.rxnetty.health.HealthCheck;
+import com.kenzan.karyon.rxnetty.resource.HelloResource;
 
 
 public class ExampleRouter implements RequestHandler<ByteBuf, ByteBuf>{
@@ -38,6 +39,7 @@ public class ExampleRouter implements RequestHandler<ByteBuf, ByteBuf>{
         .addUri("/hello/*", new HelloResource())
         .addUri("/healthcheck", new HealthCheckEndpoint(healthCheckHandler));
     }
+
     @Override
     public Observable<Void> handle(HttpServerRequest<ByteBuf> request,
             HttpServerResponse<ByteBuf> response) {
