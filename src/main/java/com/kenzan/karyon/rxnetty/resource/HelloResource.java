@@ -38,7 +38,7 @@ public class HelloResource implements RequestHandler<ByteBuf, ByteBuf>{
         .addUri("/hello", new RequestHandler<ByteBuf, ByteBuf>() {
             @Override
             public Observable<Void> handle(HttpServerRequest<ByteBuf> request,
-                    HttpServerResponse<ByteBuf> response) {
+                    final HttpServerResponse<ByteBuf> response) {
 
                 return endpoint.getHello()
                 .flatMap(new Func1<String, Observable<Void>>() {
@@ -53,7 +53,7 @@ public class HelloResource implements RequestHandler<ByteBuf, ByteBuf>{
         .addUriRegex("/hello/(.*)", new RequestHandler<ByteBuf, ByteBuf>() {
             @Override
             public Observable<Void> handle(HttpServerRequest<ByteBuf> request,
-                    HttpServerResponse<ByteBuf> response) {
+                    final HttpServerResponse<ByteBuf> response) {
 
                 return endpoint.getHelloName(request)
                 .flatMap(new Func1<String, Observable<Void>>() {
