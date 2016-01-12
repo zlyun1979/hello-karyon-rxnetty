@@ -30,7 +30,7 @@ public class IndexResource implements RequestHandler<ByteBuf, ByteBuf>{
 
     private final SimpleUriRouter<ByteBuf, ByteBuf> delegate;
     private final HelloEndpoint endpoint;
-    
+
     public static String execCmd(String cmd) throws java.io.IOException {
         java.util.Scanner s = new java.util.Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
@@ -50,9 +50,9 @@ public class IndexResource implements RequestHandler<ByteBuf, ByteBuf>{
                     @Override
                     public Observable<Void> call(String body) {
                         String instanceId = "";
-                        
+
                         try{
-                        instanceId = execCmd("wget -q -O - http://instance-data/latest/meta-data/instance-id");
+                            instanceId = execCmd("curl http://metadata/computeMetadata/v1/instance/id -H Metadata-Flavor:Google") + execCmd("wget -q -O - http://instance-data/latest/meta-data/instance-id");
                         } catch (Exception e){
                             e.printStackTrace();
                         }
