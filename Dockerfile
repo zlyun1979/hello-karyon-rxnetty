@@ -4,3 +4,4 @@ USER hkr
 RUN cd /home/hkr/; mkdir -p .hkr
 ADD build/libs/hello-karyon-rxnetty-all-0.1.0.jar /home/hkr/h-k-rx-all.jar
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/home/hkr/h-k-rx-all.jar"]
+
