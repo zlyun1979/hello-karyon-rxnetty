@@ -1,6 +1,7 @@
-FROM openjdk:alpine
-VOLUME /tmp
-RUN cd /root; mkdir -p .webgoat
-ADD build/libs/hello-karyon-rxnetty-all-0.1.0.jar h-k-rx-all.jar
-RUN sh -c 'touch /h-k-rx-all.jar'
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/h-k-rx-all.jar"]
+FROM openjdk:8-jre
+RUN useradd --home-dir /home/hkr --create-home -U hkr
+USER hkr
+RUN cd /home/hkr/; mkdir -p .hkr
+ADD build/libs/hello-karyon-rxnetty-all-0.1.0.jar /home/hkr/h-k-rx-all.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/home/hkr/h-k-rx-all.jar"]
+
